@@ -4,7 +4,7 @@ This repository is a **starter template** for building Python and Rust projects 
 
 It bootstraps a virtual environment, installs all dependencies, and provides tooling to validate the setup and run a test server.
 
-## 🚀 Getting Started
+## Getting Started
 
 To create your own project using this starter:
 
@@ -18,7 +18,7 @@ To create your own project using this starter:
 
 This will create your own copy of the repo that you can clone and start working from.
 
-## 🔧 Installation
+## Installation
 
 First, clone the template repository and navigate into it:
 
@@ -54,7 +54,7 @@ However, if you do, you will need to **activate the virtual environment manually
 source venv/bin/activate
 ```
 
-## ✅ Verifying the Installation
+## Verifying the Installation
 
 To launch a test server:
 
@@ -69,13 +69,13 @@ This will:
 * Launch the server using the installed Summoner core package
 * Generate `test_Server.log`
 
-You should see no import errors in `test_server.py`. In particular, this line should be recognized:
+You should see no import errors in `test_server.py` (if not, see [VSCode Integration](#vscode-integration)). In particular, this line should be recognized:
 
 ```python
 from summoner.server import SummonerServer
 ```
 
-## 🧠 VSCode Integration
+### VSCode Integration
 
 To ensure VSCode recognizes the Summoner core dependency and your virtual environment:
 
@@ -85,7 +85,7 @@ To ensure VSCode recognizes the Summoner core dependency and your virtual enviro
 
 Once selected, VSCode will resolve `summoner` correctly as a dependency installed in `venv/lib`.
 
-## 🧹 Cleaning and Resetting
+## Cleaning and Resetting
 
 To clean generated test files:
 
@@ -111,7 +111,7 @@ To delete all environment and Summoner core files:
 bash install.sh delete
 ```
 
-## 📦 Using the Summoner Core in Your Project
+## Using the Summoner Core in Your Project
 
 While the virtual environment is active:
 
@@ -127,7 +127,7 @@ from summoner.server import SummonerServer
 
 It is installed inside `venv/lib` along with all other dependencies.
 
-## 📁 Repo Structure (Initial)
+## Repo Structure (Initial)
 
 ```
 ├── .gitignore
@@ -145,6 +145,6 @@ After running the `setup` and `test` options:
 ├── test_Server.log
 ```
 
-## 🔗 Resources
+## Resources
 
 * [Summoner Core GitHub Repository](https://github.com/Summoner-Network/agent-sdk)
