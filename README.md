@@ -67,7 +67,7 @@ This will:
 * Create `test_server.py`
 * Create `test_server_config.json`
 * Launch the server using the installed Summoner core package
-* Generate `test_ElectronServer.log`
+* Generate `test_Server.log`
 
 You should see no import errors in `test_server.py`. In particular, this line should be recognized:
 
@@ -142,7 +142,7 @@ After running the `setup` and `test` options:
 ├── summoner-src/             # Cloned Summoner core codebase
 ├── test_server.py
 ├── test_server_config.json
-├── test_ElectronServer.log
+├── test_Server.log
 ```
 
 ## 🔗 Resources

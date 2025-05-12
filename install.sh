@@ -127,7 +127,7 @@ case "$1" in
 from summoner.server import SummonerServer
 
 if __name__ == "__main__":
-    srv = SummonerServer(name="test_ElectronServer")
+    srv = SummonerServer(name="test_Server")
     srv.run(config_path="test_server_config.json")
 EOF
     LAUNCH_CMD="source \"$VENVDIR/bin/activate\" && python test_server.py --config test_server_config.json"
