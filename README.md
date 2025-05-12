@@ -1,12 +1,33 @@
 # Starter Template
 
-This repository is a **starter template** for building Python and Rust projects that use the [Summoner Protocol](https://github.com/Summoner-Network/agent-sdk) for client/server communication.
+This repository is a **starter template** for building Python and Rust projects that integrate with [Summoner’s core codebase](https://github.com/Summoner-Network/agent-sdk) for client/server communication.
 
 It bootstraps a virtual environment, installs all dependencies, and provides tooling to validate the setup and run a test server.
 
+## 🚀 Getting Started
+
+To create your own project using this starter:
+
+<p align="center">
+  <img width="450px" src="img/use_template.png" alt="Use this template button screenshot" />
+</p>
+
+1. Click the **"Use this template"** button at the top of the [GitHub repository page](https://github.com/Summoner-Network/starter-template).
+2. Select **"Create a new repository"**.
+3. Name your project and click **"Create repository from template"**.
+
+This will create your own copy of the repo that you can clone and start working from.
+
 ## 🔧 Installation
 
-To install the Summoner Protocol codebase and its Python and Rust dependencies:
+First, clone the template repository and navigate into it:
+
+```bash
+git clone https://github.com/Summoner-Network/starter-template.git
+cd starter-template
+```
+
+Then, to install Summoner’s core codebase and its Python and Rust dependencies:
 
 ```bash
 source install.sh setup
@@ -14,10 +35,10 @@ source install.sh setup
 
 This will:
 
-* Clone the Summoner Protocol into `summoner-src/`
+* Clone Summoner’s core codebase into `summoner-src/`
 * Create a virtual environment in `venv/`
 * Install all required Python and Rust packages
-* Install the protocol codebase into the environment
+* Install the core package into the environment
 
 ### Optional: Using `bash` Instead of `source`
 
@@ -45,7 +66,7 @@ This will:
 
 * Create `test_server.py`
 * Create `test_server_config.json`
-* Launch the server using the installed Summoner Protocol codebase
+* Launch the server using the installed Summoner core package
 * Generate `test_ElectronServer.log`
 
 You should see no import errors in `test_server.py`. In particular, this line should be recognized:
@@ -56,7 +77,7 @@ from summoner.server import SummonerServer
 
 ## 🧠 VSCode Integration
 
-To ensure VSCode recognizes the Summoner Protocol dependency and your virtual environment:
+To ensure VSCode recognizes the Summoner core dependency and your virtual environment:
 
 1. Open the Command Palette: `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS)
 2. Run: `Python: Select Interpreter`
@@ -84,13 +105,13 @@ To fully reset the setup (delete `venv/` and `summoner-src/` and reinstall every
 bash install.sh reset
 ```
 
-To delete all environment and protocol files:
+To delete all environment and Summoner core files:
 
 ```bash
 bash install.sh delete
 ```
 
-## 📦 Using the Summoner Protocol in Your Project
+## 📦 Using the Summoner Core in Your Project
 
 While the virtual environment is active:
 
@@ -114,11 +135,11 @@ It is installed inside `venv/lib` along with all other dependencies.
 └── README.md
 ```
 
-After running the setup script:
+After running the `setup` and `test` options:
 
 ```
 ├── venv/                     # Python virtual environment
-├── summoner-src/             # Cloned Summoner Protocol codebase
+├── summoner-src/             # Cloned Summoner core codebase
 ├── test_server.py
 ├── test_server_config.json
 ├── test_ElectronServer.log
@@ -126,4 +147,4 @@ After running the setup script:
 
 ## 🔗 Resources
 
-* [Summoner Protocol GitHub](https://github.com/Summoner-Network/agent-sdk)
+* [Summoner Core GitHub Repository](https://github.com/Summoner-Network/agent-sdk)
