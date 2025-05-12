@@ -124,7 +124,7 @@ case "$1" in
     fi
     cp "$DEFAULT_CFG" "$ROOT/test_server_config.json"
     cat > "$ROOT/test_server.py" <<'EOF'
-from summoner.server import SummonerServer
+from summoner_core.server import SummonerServer
 
 if __name__ == "__main__":
     srv = SummonerServer(name="test_Server")

@@ -72,7 +72,7 @@ This will:
 You should see no import errors in `test_server.py` (if not, see [VSCode Integration](#vscode-integration)). In particular, this line should be recognized:
 
 ```python
-from summoner.server import SummonerServer
+from summoner_core.server import SummonerServer
 ```
 
 ### VSCode Integration
@@ -83,7 +83,7 @@ To ensure VSCode recognizes the Summoner core dependency and your virtual enviro
 2. Run: `Python: Select Interpreter`
 3. Select the one labeled `'venv':venv`
 
-Once selected, VSCode will resolve `summoner` correctly as a dependency installed in `venv/lib`.
+Once selected, VSCode will resolve `summoner_core` correctly as a dependency installed in `venv/lib`.
 
 ## Cleaning and Resetting
 
@@ -119,10 +119,10 @@ While the virtual environment is active:
 source venv/bin/activate
 ```
 
-You can import and use `summoner` like any other Python package:
+You can import and use `summoner_core` like any other Python package:
 
 ```python
-from summoner.server import SummonerServer
+from summoner_core.server import SummonerServer
 ```
 
 It is installed inside `venv/lib` along with all other dependencies.
