@@ -30,7 +30,7 @@ bootstrap() {
   # Clone if missing
   if [ ! -d "$SRC" ]; then
     echo "📥 Cloning Summoner SDK..."
-    git clone --depth 1 https://github.com/Summoner-Network/agent-sdk.git "$SRC"
+    git clone --depth 1 https://github.com/Summoner-Network/summoner-core.git "$SRC"
   fi
 
   # Create venv if missing

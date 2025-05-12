@@ -1,6 +1,6 @@
 # Starter Template
 
-This repository is a **starter template** for building Python and Rust projects that integrate with [Summoner’s core codebase](https://github.com/Summoner-Network/agent-sdk) for client/server communication.
+This repository is a **starter template** for building Python and Rust projects that integrate with [Summoner’s core codebase](https://github.com/Summoner-Network/summoner-core) for client/server communication.
 
 It bootstraps a virtual environment, installs all dependencies, and provides tooling to validate the setup and run a test server.
 
@@ -147,4 +147,4 @@ After running the `setup` and `test` options:
 
 ## Resources
 
-* [Summoner Core GitHub Repository](https://github.com/Summoner-Network/agent-sdk)
+* [Summoner Core GitHub Repository](https://github.com/Summoner-Network/summoner-core)
