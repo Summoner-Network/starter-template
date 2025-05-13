@@ -17,7 +17,7 @@ done
 #               Variables & Paths
 # ─────────────────────────────────────────────────────
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-SRC="$ROOT/summoner-src"
+SRC="$ROOT/core"
 VENVDIR="$ROOT/venv"
 DATA="$SRC/desktop_data"
 
@@ -124,9 +124,11 @@ case "$1" in
     fi
     cp "$DEFAULT_CFG" "$ROOT/test_server_config.json"
     cat > "$ROOT/test_server.py" <<'EOF'
-from summoner_core.server import SummonerServer
+from summoner.server import SummonerServer
+from tooling.your_package import hello_summoner
 
 if __name__ == "__main__":
+    hello_summoner()
     srv = SummonerServer(name="test_Server")
     srv.run(config_path="test_server_config.json")
 EOF
