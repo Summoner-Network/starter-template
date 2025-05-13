@@ -84,7 +84,7 @@ case "$1" in
 
   delete)
     echo "🔄 Deleting environment..."
-    rm -rf "$SRC" "$VENVDIR"
+    rm -rf "$SRC" "$VENVDIR" "$ROOT"/test_*.{log,py,json}
     echo "✅ Deletion complete"
     # exit 0
     ;;
