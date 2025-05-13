@@ -157,7 +157,7 @@ Your native module will be injected into the SDK structure automatically during 
 Write your package inside the `tooling/` directory. For example:
 
 ```
-tooling/my_package/
+tooling/your_package/
 ├── __init__.py         # e.g. contains: from .agent import Agent
 ├── agent.py
 └── ...
@@ -166,7 +166,7 @@ tooling/my_package/
 In your `__init__.py`, re-export what you want to expose. This allows you to write:
 
 ```python
-from tooling.my_package import Agent
+from tooling.your_package import Agent
 ````
 
 To make this import work at build time when integrated into the SDK, add the following to the top of your Python files:
@@ -186,18 +186,18 @@ This ensures Python can resolve your package inside the `summoner/` folder once 
 When building the SDK, a script similar to `install.sh setup` will:
 
 * Clone the `summoner-core` repository
-* Copy your folder `tooling/my_package/` into the core’s `summoner/` directory
+* Copy your folder `tooling/your_package/` into the core’s `summoner/` directory
 * Replace all import statements of the form:
 
 ```python
-from tooling.my_package import Agent
-from summoner.my_package import Agent
+from tooling.your_package import Agent
+from summoner.your_package import Agent
 ```
 
 with the cleaner form:
 
 ```python
-from my_package import Agent
+from your_package import Agent
 ```
 
 These imports will work as long as each file includes the same `sys.path` insert block, adapted to its directory depth:
