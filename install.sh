@@ -82,8 +82,8 @@ case "$1" in
 
   delete)
     echo "🔄 Deleting environment..."
-    rm -rf "$SRC" "$VENVDIR" "$ROOT"/test_*.{py,json}
-    rm -rf "$ROOT"/logs/*
+    rm -rf "$SRC" "$VENVDIR" "$ROOT"/logs
+    rm -f "$ROOT"/test_*.{py,json}
     echo "✅ Deletion complete"
     # exit 0
     ;;
@@ -137,8 +137,8 @@ EOF
 
   clean)
     echo "🧹 Cleaning test scripts..."
-    rm -f "$ROOT"/test_*.{py,json}
     rm -rf "$ROOT"/logs/*
+    rm -f "$ROOT"/test_*.{py,json}
     echo "✅ Clean complete"
     # exit 0
     ;;
