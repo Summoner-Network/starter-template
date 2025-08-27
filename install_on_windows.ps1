@@ -1,4 +1,23 @@
 # install_on_windows.ps1 — PowerShell-only manager (uses core\.venv exclusively)
+# ==============================================================================
+# How to use this script
+# ==============================================================================
+# > First, you may need to use the following command to allow the script to run:
+# Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+#
+# > Then, you can run the script as follows:
+# .\install_on_windows.ps1 setup
+# .\install_on_windows.ps1 test_server_bg                # start in background
+# .\install_on_windows.ps1 status                        # see PID + port status
+# .\install_on_windows.ps1 stop_server                   # stop cleanly
+#
+# > or foreground run (Ctrl+C may not work reliably on Windows):
+# .\install_on_windows.ps1 test_server
+#
+# > choose port or force-terminate listeners:
+# .\install_on_windows.ps1 test_server_bg -Port 8890
+# .\install_on_windows.ps1 stop_server -Port 8890
+# ==============================================================================
 [CmdletBinding()]
 param(
   [Parameter(Position=0)]
