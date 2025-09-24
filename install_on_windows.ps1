@@ -150,7 +150,7 @@ if __name__ == "__main__":
 }
 
 function Usage {
-  Write-Host "Usage: .\manage.ps1 {setup|delete|reset|deps|test_server|test_server_bg|stop_server|status|clean|use_core_venv} [-Port 8888] [-Force]"
+  Write-Host "Usage: .\install_on_windows.ps1 {setup|delete|reset|deps|test_server|test_server_bg|stop_server|status|clean|use_core_venv} [-Port 8888] [-Force]"
 }
 
 switch ($Action) {
@@ -170,8 +170,8 @@ switch ($Action) {
     Write-Host ("Environment ready at {0}" -f $ROOT)
     Write-Host ""
     Write-Host "Use background start + stop for reliable control on Windows:"
-    Write-Host "  .\manage.ps1 test_server_bg   # start"
-    Write-Host "  .\manage.ps1 stop_server      # stop"
+    Write-Host "  .\install_on_windows.ps1 test_server_bg   # start"
+    Write-Host "  .\install_on_windows.ps1 stop_server      # stop"
   }
 
   'deps' {
@@ -233,7 +233,7 @@ switch ($Action) {
     $args = @($script:TestPy, '--config', $script:TestCfg)
     $proc = Start-Process -FilePath $vp.Py -ArgumentList $args -WorkingDirectory $ROOT -PassThru -WindowStyle Normal
     Set-Content -Path $PIDFILE -Value $proc.Id -Encoding ascii
-    Write-Host ("Background PID: {0}. Use '.\manage.ps1 status' or 'stop_server'." -f $proc.Id)
+    Write-Host ("Background PID: {0}. Use '.\install_on_windows.ps1 status' or 'stop_server'." -f $proc.Id)
   }
 
   'stop_server' {
@@ -308,7 +308,7 @@ switch ($Action) {
 
   'use_core_venv' {
     $vp = Resolve-VenvPaths $VENVDIR
-    if (-not $vp.Bin) { throw ("venv not found at {0}. Run .\manage.ps1 setup first." -f $VENVDIR) }
+    if (-not $vp.Bin) { throw ("venv not found at {0}. Run .\install_on_windows.ps1 setup first." -f $VENVDIR) }
     # Prepend this session's PATH so python/pip resolve to core\.venv
     $env:Path = "$($vp.Bin);$env:Path"
     & "$($vp.Py)" -c 'import sys; print(sys.executable)'
