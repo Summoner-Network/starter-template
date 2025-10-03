@@ -62,10 +62,10 @@ function Ensure-Git {
   }
 }
 
-# ---------- Paths (Option A layout) ----------
+# ---------- Paths ----------
 $ROOT     = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SRC      = Join-Path $ROOT 'core'        # summoner-core repository path
-$VENVDIR  = Join-Path $SRC  '.venv'       # venv lives inside repo
+$VENVDIR  = Join-Path $ROOT  'venv'       # venv lives inside the root repo
 $DATA     = Join-Path $SRC  'desktop_data'
 $PIDFILE  = Join-Path $ROOT '.server.pid' # background server PID
 
@@ -306,15 +306,33 @@ switch ($Action) {
     Write-Host "Deletion complete."
   }
 
-  'use_core_venv' {
+  'use_venv' {
     $vp = Resolve-VenvPaths $VENVDIR
-    if (-not $vp.Bin) { throw ("venv not found at {0}. Run .\install_on_windows.ps1 setup first." -f $VENVDIR) }
-    # Prepend this session's PATH so python/pip resolve to core\.venv
-    $env:Path = "$($vp.Bin);$env:Path"
-    & "$($vp.Py)" -c 'import sys; print(sys.executable)'
-    Write-Host "This PowerShell session now uses core\.venv's python/pip."
+    if (-not $vp.Bin) {
+        throw ("venv not found at {0}. Run .\install_on_windows.ps1 setup first." -f $VENVDIR)
+    }
+
+    # Prefer to run the venv activation script if present (dot-source for current session)
+    $activatePS = Join-Path $VENVDIR 'Scripts\Activate.ps1'
+    if (Test-Path $activatePS) {
+        Write-Host "[INFO] Activating venv with: $activatePS"
+        . $activatePS
+    } else {
+        # Fallback: clear any cached command lookups, prepend Scripts to PATH and set VIRTUAL_ENV
+        Remove-Item Function:\python -ErrorAction SilentlyContinue
+        Remove-Item Function:\pip   -ErrorAction SilentlyContinue
+
+        $env:Path = "$($vp.Bin);$env:Path"
+        $env:VIRTUAL_ENV = (Resolve-Path $VENVDIR).ProviderPath
+        Write-Host "[INFO] Prepended $($vp.Bin) to PATH and set VIRTUAL_ENV."
+    }
+
+    # Verification
+    & "$($vp.Py)" -c 'import sys; print("python executable:", sys.executable)'
+    Write-Host "This PowerShell session now uses the venv at: $VENVDIR"
     Write-Host "To revert, start a new PowerShell session."
   }
+
 
   default { Usage }
 }
