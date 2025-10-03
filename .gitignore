@@ -1,6 +1,7 @@
 core/
 .DS_Store
 logs/
+*.old
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
