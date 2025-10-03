@@ -8,13 +8,12 @@
 # > Then, you can run the script as follows:
 #   .\install_on_windows.ps1 setup
 #   .\install_on_windows.ps1 test_server                # run server in foreground
-#   .\install_on_windows.ps1 use_venv                   # activate the repo venv in this session (dot-source to affect current shell)
+#   . .\install_on_windows.ps1 use_venv                  # dot-source to activate the repo venv in THIS session (recommended for full activation)
 #
 # > Notes:
-# - To have the venv active in your CURRENT interactive PowerShell session you must either:
-#     a) dot-source the script: . .\install_on_windows.ps1 use_venv
-#     b) dot-source the setup/reset call: . .\install_on_windows.ps1 setup  (then activation will persist)
-# - If you run the script normally (.\install_on_windows.ps1 setup) the script will attempt to open a new PowerShell window with the venv activated so you can use it interactively.
+# - Running the script normally (.\install_on_windows.ps1 setup) will set the environment variables so python/pip resolve to the repo venv.
+# - If you also want prompt/function changes from Activate.ps1 to persist in your interactive shell, dot-source:
+#     . .\install_on_windows.ps1 use_venv
 #
 # > or foreground run (Ctrl+C may not work reliably on Windows):
 #   .\install_on_windows.ps1 test_server
@@ -101,13 +100,17 @@ function Is-ProcessRunning([int]$pid) {
 }
 
 # Activate the repo venv in the current PowerShell process.
+# Note: environment variables (PATH, VIRTUAL_ENV) set here will persist in the session.
+#       prompt/function modifications inside Activate.ps1 will only persist if the activate script is dot-sourced in the current session.
 function Activate-Venv {
   param([string]$VenvDir)
 
   $vp = Resolve-VenvPaths $VenvDir
   if (-not $vp.Py) { throw ("venv not found at {0}. Run .\install_on_windows.ps1 setup first." -f $VenvDir) }
 
-  # Prefer Activate.ps1 if present; dot-source it so it affects this process.
+  # If Activate.ps1 is present, dot-source it here — that tries to set functions and state.
+  # If the manager script itself is not dot-sourced, dot-sourcing inside this function affects the manager script scope,
+  # but environment variable modifications will still persist at the process level.
   $activatePS = Join-Path $VenvDir 'Scripts\Activate.ps1'
   if (Test-Path $activatePS) {
     try {
@@ -128,21 +131,10 @@ function Activate-Venv {
   # Verification
   & $vp.Py -c "import sys, os; print('python executable:', sys.executable); print('sys.prefix:', os.path.abspath(sys.prefix))"
   Write-Host ("Activated venv at: {0}" -f $VenvDir)
-  Write-Host "To persist activation behaviour in future shells, run:"
-  Write-Host "  . "$VenvDir\Scripts\Activate.ps1"    # (or dot-source the script: . .\install_on_windows.ps1 use_venv )"
-}
-
-# If the script was invoked normally (not dot-sourced), open a new interactive shell with venv activated.
-# This helper launches pwsh if available, otherwise falls back to Windows PowerShell.
-function Open-NewShell-With-Venv {
-  param([string]$VenvDir)
-
-  $activateCmd = ". '$VenvDir\Scripts\Activate.ps1'"
-  $psExe = if (Get-Command pwsh -ErrorAction SilentlyContinue) { (Get-Command pwsh).Source } else { (Get-Command powershell).Source }
-
-  Write-Host ("Opening a new interactive shell with venv activated using: {0}" -f $psExe)
-  Start-Process -FilePath $psExe -ArgumentList @('-NoExit','-Command',$activateCmd) -WindowStyle Normal | Out-Null
-  Write-Host "New shell started. Close that shell to return here."
+  Write-Host "If you want prompt/function changes to persist in this interactive shell, run:"
+  Write-Host "  . .\install_on_windows.ps1 use_venv"
+  Write-Host "or dot-source the venv's activate directly:"
+  Write-Host "  . $VENVDIR\Scripts\Activate.ps1"
 }
 
 function Bootstrap {
@@ -203,6 +195,9 @@ function Usage {
   Write-Host "Usage: .\install_on_windows.ps1 {setup|delete|reset|deps|test_server|clean|use_venv} [-Port 8888] [-Force]"
 }
 
+# Detect if script was dot-sourced into current session (used only for messaging).
+$IsDotSourced = ($MyInvocation.InvocationName -eq '.')
+
 switch ($Action) {
   'setup' {
     if (-not (Test-Path $VENVDIR)) {
@@ -219,28 +214,34 @@ switch ($Action) {
     }
     Write-Host ("Environment ready at {0}" -f $ROOT)
 
-    # Try to activate the venv in current session first.
+    # Activate venv in this session (sets PATH and VIRTUAL_ENV). These env changes will persist.
     try {
       Activate-Venv -VenvDir $VENVDIR
     } catch {
       Write-Warning ("Failed to auto-activate venv in this process: {0}" -f $_.Exception.Message)
-      Write-Host "You can activate manually with: . "$VENVDIR\Scripts\Activate.ps1" or dot-source this script: . .\install_on_windows.ps1 use_venv"
+      Write-Host "You can activate manually with: . $VENVDIR\Scripts\Activate.ps1  (dot-source into current shell)"
     }
 
-    # If this script was NOT dot-sourced, also open a new interactive shell with the venv activated
-    if ($MyInvocation.InvocationName -ne '.') {
-      try {
-        Open-NewShell-With-Venv -VenvDir $VENVDIR
-      } catch {
-        Write-Warning ("Failed to open new shell with venv: {0}" -f $_.Exception.Message)
-      }
+    if ($IsDotSourced) {
+      Write-Host "Note: you ran this script via dot-sourcing; activation (including functions/prompt) persists in your current shell."
     } else {
-      Write-Host "Note: you ran this script via dot-sourcing; venv activation persists in your current shell."
+      Write-Host "Note: if you want prompt/function changes to persist, dot-source the activation now:"
+      Write-Host "  . .\install_on_windows.ps1 use_venv"
     }
 
     Write-Host ""
     Write-Host "To run the test server in foreground (Ctrl+C to stop):"
     Write-Host "  .\install_on_windows.ps1 test_server -Port 8888"
+  }
+
+  'delete' {
+    Write-Host "Deleting environment..."
+    if (Test-Path $SRC)         { Remove-Item $SRC -Recurse -Force }
+    if (Test-Path $VENVDIR)     { Remove-Item $VENVDIR -Recurse -Force }
+    if (Test-Path "$ROOT\logs") { Remove-Item "$ROOT\logs" -Recurse -Force }
+    Get-ChildItem $ROOT -Filter 'test_*.py'   -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    Get-ChildItem $ROOT -Filter 'test_*.json' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    Write-Host "Deletion complete."
   }
 
   'deps' {
@@ -283,22 +284,19 @@ switch ($Action) {
     Get-ChildItem $ROOT -Filter 'test_*.json' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
     Bootstrap
 
-    # Activate the freshly created venv in the current session (if dot-sourced) or open new shell
+    # Activate the freshly created venv in this session (sets PATH/VIRTUAL_ENV)
     try {
       Activate-Venv -VenvDir $VENVDIR
     } catch {
       Write-Warning ("Failed to auto-activate venv after reset in this process: {0}" -f $_.Exception.Message)
-      Write-Host "You can activate manually with: . "$VENVDIR\Scripts\Activate.ps1" or dot-source: . .\install_on_windows.ps1 use_venv"
+      Write-Host "You can activate manually with: . $VENVDIR\Scripts\Activate.ps1  (dot-source into current shell)"
     }
 
-    if ($MyInvocation.InvocationName -ne '.') {
-      try {
-        Open-NewShell-With-Venv -VenvDir $VENVDIR
-      } catch {
-        Write-Warning ("Failed to open new shell with venv after reset: {0}" -f $_.Exception.Message)
-      }
+    if ($IsDotSourced) {
+      Write-Host "Note: you ran this script via dot-sourcing; activation (including functions/prompt) persists in your current shell."
     } else {
-      Write-Host "Note: you ran this script via dot-sourcing; venv activation persists in your current shell."
+      Write-Host "Note: if you want prompt/function changes to persist, dot-source the activation now:"
+      Write-Host "  . .\install_on_windows.ps1 use_venv"
     }
 
     Write-Host "Reset complete."
@@ -320,4 +318,3 @@ switch ($Action) {
 
   default { Usage }
 }
-
