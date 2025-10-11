@@ -2,6 +2,8 @@ core/
 .DS_Store
 logs/
 *.old
+test_server_config.json 
+test_server.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
